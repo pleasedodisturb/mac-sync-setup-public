@@ -56,7 +56,7 @@ fi
 section "CLI Tools (brew)"
 installed_brews=$(brew list --formula 2>/dev/null)
 while IFS= read -r line; do
-    pkg=$(echo "$line" | sed -n 's/^brew "\(.*\)"/\1/p')
+    pkg=$(echo "$line" | sed -n 's/^brew "\([^"]*\)".*/\1/p')
     [[ -z "$pkg" ]] && continue
     # For tap/package format, check just the package name
     check_name="${pkg##*/}"
