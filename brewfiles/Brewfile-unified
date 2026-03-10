@@ -177,7 +177,6 @@ mas "Timer RH PRO", id: 1566564612
 mas "Tot", id: 1491071483
 mas "Under My Roof", id: 1524335878
 mas "Unsplash Wallpapers", id: 1284863847
-mas "Whisper Transcription", id: 1668083311
 
 # VS Code Extensions
 vscode "ecmel.vscode-html-css"
