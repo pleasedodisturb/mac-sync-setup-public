@@ -1,6 +1,6 @@
 # =============================================================================
 # Unified Brewfile — MacBook + Mac Mini
-# Generated: 2026-03-10
+# Updated: 2026-03-10 (post MAS→brew and manual→brew migration)
 # =============================================================================
 
 # Taps
@@ -24,6 +24,7 @@ brew "lazydocker"
 brew "mackup"
 brew "maigret"
 brew "mark"
+brew "mas"
 brew "matcha"
 brew "node"
 brew "pandoc"
@@ -32,28 +33,35 @@ brew "pipx"
 brew "protonpass/tap/pass-cli"
 brew "redis"
 brew "rumdl"
+brew "syncthing", restart_service: :changed
 brew "vibecheck"
 brew "yt-dlp"
 
-# GUI Apps
+# GUI Apps — brew casks
 cask "1password"
+cask "acorn"
 cask "alfred"
 cask "alt-tab"
 cask "android-platform-tools"
+cask "ausweisapp"
 cask "backdrop"
 cask "balenaetcher"
 cask "bartender"
+cask "bias-fx"
 cask "bitwarden"
 cask "blip"
 cask "block-goose"
 cask "brave-browser"
 cask "busycontacts"
 cask "calibre"
+cask "canva"
+cask "cardhop"
 cask "chatgpt"
 cask "claude"
 cask "claude-code"
 cask "cleanshot"
 cask "cursor"
+cask "daisydisk"
 cask "dash"
 cask "discord"
 cask "docker-desktop"
@@ -61,48 +69,72 @@ cask "dockflow"
 cask "elecom-mouse-util"
 cask "elgato-stream-deck"
 cask "ente"
+cask "fantastical"
 cask "figma"
 cask "forklift"
 cask "ghostty"
 cask "git-credential-manager"
 cask "glkvm"
 cask "google-chrome"
+cask "gpt4all"
+cask "grandperspective"
+cask "hazeover"
 cask "hyperwhisper"
 cask "imageoptim"
+cask "insta360-link-controller"
 cask "istat-menus"
 cask "iterm2"
 cask "jupyterlab-app"
 cask "karabiner-elements"
+cask "keka"
 cask "keyboard-maestro"
-cask "send-to-kindle"
 cask "kitty"
+cask "linear-linear"
+cask "little-snitch"
 cask "logi-options+"
+cask "lookaway"
+cask "macwhisper"
 cask "mcpbundler"
+cask "microsoft-office"
 cask "mono-mdk-for-visual-studio"
+cask "monologue"
 cask "muteme"
 cask "native-access"
 cask "notion"
 cask "obs"
 cask "obsidian"
+# onedrive — bundled with microsoft-office, no separate cask needed
 cask "plex"
 cask "pocket-casts"
 cask "proton-drive"
+cask "proton-mail"
+cask "proton-mail-bridge"
 cask "protonvpn"
 cask "proxyman"
 cask "qmk-toolbox"
+cask "quitter"
 cask "raycast"
+cask "rectangle-pro"
 cask "secretive"
+cask "send-to-kindle"
 cask "signal"
+cask "soundsource"
+cask "soulver"
 cask "spotify"
 cask "standard-notes"
 cask "steam"
 cask "sublime-text"
+cask "superwhisper"
 cask "swish"
 cask "tailscale-app"
+cask "textsniper"
+cask "threema"
 cask "thunderbird"
 cask "ticktick"
 cask "timing"
 cask "tradingview"
+cask "transnomino"
+cask "via"
 cask "visual-studio-code"
 cask "vivaldi"
 cask "vlc"
@@ -111,13 +143,56 @@ cask "whisky"
 cask "wireshark-app"
 cask "zoom"
 
+# Mac App Store (via mas)
+mas "Amphetamine", id: 937984704
+mas "Blackmagic Disk Speed Test", id: 425264550
+mas "Blackmagic RAW Speed Test", id: 1466185689
+mas "Calca", id: 635758264
+mas "Capo", id: 696977615
+mas "Chaotica Lite 2", id: 1535167535
+mas "Chronicle", id: 572561420
+mas "Color Name Detector", id: 976799868
+mas "Folder Tidy", id: 486626129
+mas "Forest Grow", id: 6444512801
+mas "Ground News", id: 1324203419
+mas "HACK", id: 1464477788
+mas "Home Assistant", id: 1099568401
+mas "Hyperspace", id: 6739505345
+mas "Ivory", id: 6444602274
+mas "LiquidText", id: 922765270
+mas "Magnet", id: 441258766
+mas "Market Countdown", id: 1668967522
+mas "Olvid", id: 1414865219
+mas "Paprika Recipe Manager 3", id: 1303222628
+mas "Parcel", id: 375589283
+mas "PDF Protector", id: 566631581
+mas "PDF Squeezer", id: 1502111349
+mas "PDF Text Include", id: 6443781970
+mas "Perplexity", id: 6714467650
+mas "PhotoSweeper", id: 463362050
+mas "PiPad", id: 1482575592
+mas "Pixelmator Pro", id: 1289583905
+mas "Play", id: 1596506190
+mas "Playlisty Apple Music", id: 1459275972
+mas "Rippple", id: 1309894528
+mas "SnippetsLab", id: 1006087419
+mas "Tadama", id: 1415817706
+mas "Timer RH PRO", id: 1566564612
+mas "Tot", id: 1491071483
+mas "Under My Roof", id: 1524335878
+mas "Unsplash Wallpapers", id: 1284863847
+mas "Whisper Transcription", id: 1668083311
+
 # VS Code Extensions
 vscode "ecmel.vscode-html-css"
 vscode "github.codespaces"
+vscode "ms-python.debugpy"
 vscode "ms-python.isort"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
+vscode "ms-python.vscode-python-envs"
 vscode "ms-vscode.cmake-tools"
+vscode "ms-vscode.cpp-devtools"
 vscode "ms-vscode.cpptools"
 vscode "ms-vscode.cpptools-extension-pack"
 vscode "ms-vscode.cpptools-themes"

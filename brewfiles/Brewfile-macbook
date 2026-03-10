@@ -11,7 +11,6 @@ brew "cask"
 brew "claude-code-templates"
 brew "docker"
 brew "fish"
-brew "fresh-editor"
 brew "gh"
 brew "ghostscript"
 brew "icloudpd"
@@ -20,109 +19,121 @@ brew "lazydocker"
 brew "mackup"
 brew "maigret"
 brew "mark"
+brew "mas"
 brew "matcha"
 brew "pandoc"
 brew "pdm"
 brew "pipx"
 brew "redis"
 brew "rumdl"
-brew "strands-agents-sops"
 brew "syncthing", restart_service: :changed
-brew "telnet"
 brew "vibecheck"
 brew "weechat"
 brew "yt-dlp"
 brew "protonpass/tap/pass-cli"
 cask "1password"
-cask "1password-cli"
-cask "adobe-digital-editions"
+cask "acorn"
 cask "alfred"
-cask "anaconda"
+cask "alt-tab"
 cask "android-platform-tools"
-cask "antigravity"
-cask "arc"
-cask "backblaze"
+cask "ausweisapp"
 cask "backdrop"
 cask "balenaetcher"
 cask "bartender"
-cask "beamer"
+cask "bias-fx"
 cask "bitwarden"
 cask "blip"
 cask "block-goose"
 cask "brave-browser"
+cask "busycontacts"
 cask "calibre"
+cask "canva"
+cask "cardhop"
 cask "chatgpt"
+cask "claude"
 cask "claude-code"
 cask "cleanshot"
-cask "crossover"
+cask "cursor"
+cask "daisydisk"
 cask "dash"
 cask "discord"
 cask "docker-desktop"
 cask "dockflow"
-cask "dockmate"
 cask "elecom-mouse-util"
-cask "element"
 cask "elgato-stream-deck"
+cask "ente"
+cask "fantastical"
 cask "figma"
-cask "firefox"
 cask "forklift"
 cask "ghostty"
 cask "git-credential-manager"
 cask "gitbutler"
 cask "glkvm"
 cask "google-chrome"
-cask "handbrake-app"
+cask "gpt4all"
+cask "grandperspective"
+cask "hazeover"
 cask "hyperwhisper"
 cask "imageoptim"
+cask "insta360-link-controller"
 cask "istat-menus"
 cask "iterm2"
 cask "jupyterlab-app"
 cask "karabiner-elements"
+cask "keka"
 cask "keyboard-maestro"
 cask "kindle"
-cask "kiro"
 cask "kitty"
-cask "libreoffice"
+cask "linear-linear"
+cask "little-snitch"
 cask "logi-options+"
 cask "logitech-options"
-cask "logitech-unifying"
-cask "macforge"
+cask "lookaway"
+cask "macwhisper"
 cask "mcpbundler"
 cask "microsoft-edge"
+cask "microsoft-office"
 cask "mono-mdk-for-visual-studio"
+cask "monologue"
+cask "muteme"
 cask "native-access"
-cask "nessie-app"
 cask "notion"
 cask "obs"
-cask "parallels"
+cask "obsidian"
 cask "plex"
 cask "pocket-casts"
+cask "proton-drive"
+cask "proton-mail"
+cask "proton-mail-bridge"
 cask "proton-pass"
 cask "protonvpn"
 cask "proxyman"
 cask "qmk-toolbox"
-cask "raindropio"
+cask "quitter"
 cask "raycast"
 cask "rectangle-pro"
 cask "secretive"
+cask "send-to-kindle"
 cask "signal"
-cask "slack"
+cask "soulver"
+cask "soundsource"
 cask "spotify"
 cask "standard-notes"
 cask "steam"
 cask "sublime-merge"
 cask "sublime-text"
-cask "superset"
+cask "superwhisper"
 cask "swish"
-cask "tabby"
-cask "teamviewer"
-cask "telegram"
+cask "tailscale-app"
+cask "threema"
 cask "thunderbird"
+cask "ticktick"
 cask "timing"
 cask "tower"
 cask "tradingview"
-cask "transmission"
+cask "transnomino"
 cask "tuta-mail"
+cask "via"
 cask "visual-studio-code"
 cask "vivaldi"
 cask "vlc"
@@ -130,3 +141,60 @@ cask "warp"
 cask "whisky"
 cask "wireshark-app"
 cask "zoom"
+mas "Amphetamine", id: 937984704
+mas "Blackmagic Disk Speed Test", id: 425264550
+mas "Blackmagic RAW Speed Test", id: 1466185689
+mas "Calca", id: 635758264
+mas "Capo", id: 696977615
+mas "Chaotica Lite 2", id: 1535167535
+mas "Chronicle", id: 572561420
+mas "Color Name Detector", id: 976799868
+mas "Folder Tidy", id: 486626129
+mas "Forest Grow", id: 6444512801
+mas "GarageBand", id: 682658836
+mas "Ground News", id: 1324203419
+mas "HACK", id: 1464477788
+mas "Home Assistant", id: 1099568401
+mas "Hyperspace", id: 6739505345
+mas "iMovie", id: 408981434
+mas "Ivory", id: 6444602274
+mas "Keynote", id: 409183694
+mas "LiquidText", id: 922765270
+mas "Magnet", id: 441258766
+mas "Market Countdown", id: 1668967522
+mas "Numbers", id: 409203825
+mas "Olvid", id: 1414865219
+mas "Pages", id: 409201541
+mas "Paprika Recipe Manager 3", id: 1303222628
+mas "Parcel", id: 375589283
+mas "PDF Protector", id: 566631581
+mas "PDF Squeezer", id: 1502111349
+mas "PDF Text Include", id: 6443781970
+mas "Perplexity", id: 6714467650
+mas "PhotoSweeper", id: 463362050
+mas "PiPad", id: 1482575592
+mas "Pixelmator Pro", id: 1289583905
+mas "Play", id: 1596506190
+mas "Playlisty Apple Music", id: 1459275972
+mas "Rippple", id: 1309894528
+mas "SnippetsLab", id: 1006087419
+mas "Tadama", id: 1415817706
+mas "TestFlight", id: 899247664
+mas "Timer RH PRO", id: 1566564612
+mas "Tot", id: 1491071483
+mas "Under My Roof", id: 1524335878
+mas "Unsplash Wallpapers", id: 1284863847
+mas "Whisper Transcription", id: 1668083311
+vscode "ecmel.vscode-html-css"
+vscode "github.codespaces"
+vscode "ms-python.debugpy"
+vscode "ms-python.isort"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "ms-python.vscode-python-envs"
+vscode "ms-vscode.cmake-tools"
+vscode "ms-vscode.cpp-devtools"
+vscode "ms-vscode.cpptools"
+vscode "ms-vscode.cpptools-extension-pack"
+vscode "ms-vscode.cpptools-themes"
+vscode "twxs.cmake"

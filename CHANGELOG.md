@@ -1,5 +1,72 @@
 # Changelog
 
+## 2026-03-10 — MacBook full app consolidation + MAS→brew migration
+
+### What was done
+
+1. **MAS→brew migration** — uninstalled 14 Mac App Store apps and reinstalled as brew casks
+   - Acorn, AusweisApp, Canva, Cardhop, DaisyDisk, Fantastical, GrandPerspective, HazeOver, Keka, LookAway, Soulver, TextSniper, TickTick (Spark skipped — not needed)
+   - Installed `mas` CLI to manage remaining MAS-only apps
+
+2. **Manual app→brew migration** — deleted manually-installed apps, reinstalled as brew casks
+   - BIAS FX 2, GPT4All, Insta360 Link Controller, iStat Menus (upgraded 6→7), Little Snitch, MacWhisper, Microsoft Office (consolidated suite), Monologue, Proton Mail + Bridge, Quitter, SoundSource, superwhisper, Threema, Transnomino, VIA
+   - OBSBOT Center skipped (cask disabled by Homebrew)
+
+3. **Tailscale full wipe & reinstall** — killed processes, removed system extension, containers, preferences, launch agents, reinstalled clean via brew
+
+4. **Package review removals** (from `mac-mini-package-review.md`)
+   - CLI: fresh-editor, strands-agents-sops, telnet
+   - Casks: 1password-cli, adobe-digital-editions, anaconda, antigravity, arc, backblaze, beamer, crossover, dockmate, element, firefox, handbrake-app, kiro, libreoffice, logitech-options, logitech-unifying, macforge, microsoft-edge, nessie-app, parallels, raindropio, slack, superset, tabby, teamviewer, telegram, transmission
+   - Rectangle Pro restored (was in removal list but actively used)
+
+5. **Unwanted unmanaged apps removed** — Adobe Digital Editions (old), iTermAI, iTermBrowserPlugin, Jabra Direct/Firmware, Kairos Reader, Kensington Konnect, Magic Keys, Mastodon, MouseAssistant, NuPhyIO, NUX Device Updater, Sparkle, THR Remote, TrioManager, Synergy
+
+6. **New cross-machine installs** — alt-tab, bitwarden, busycontacts, claude, cursor, ente, linear-linear, muteme, obsidian, proton-drive
+
+7. **GitHub repos synced** — all 8 repos cloned/pulled to `~/Projects/`, renamed to match GitHub, switched from HTTPS to SSH remotes
+
+8. **Brewfile-unified updated** — now includes MAS apps (via `mas`), all migrated brew casks, VS Code extensions. Total: ~100 casks + 38 MAS apps
+
+9. **Project setup** — added `.claude/CLAUDE.md` with 3-layer memory framework, moved cleanup scripts to `scripts/`
+
+### Bugs & Issues Found
+
+#### `mas uninstall` requires sudo
+- **Symptom**: `mas uninstall` fails in sandboxed/non-interactive shells
+- **Fix**: Must run in terminal with password entry
+
+#### `obsbot-center` cask disabled
+- **Symptom**: `brew install --cask obsbot-center` → "has been disabled because download is behind a signed URL"
+- **Fix**: Install manually from obsbot.com
+- **Since**: 2025-04-07
+
+#### `set -euo pipefail` kills script on first cask error
+- **Symptom**: obsbot-center failure stopped all subsequent installs
+- **Fix**: Split into continuation scripts; consider `|| true` per-cask in future
+
+#### `tee` output redirection fails in fish shell
+- **Symptom**: `bash script.sh 2>&1 | tee file` → "Unknown command: file"
+- **Fix**: Syntax is the same in fish, but the shell was interpreting `~/path` on the second line of a multi-line paste incorrectly. Use single-line command.
+
+#### Rectangle Pro incorrectly marked for removal
+- **Symptom**: Removed in step 4 based on `mac-mini-package-review.md`
+- **Fix**: Reinstalled via `brew install --cask rectangle-pro`, added back to Brewfile-unified
+
+### Decisions Made
+
+| Decision | Rationale |
+|----------|-----------|
+| Prefer brew casks over MAS | Trackable in Brewfile, consistent across machines |
+| Include MAS apps in Brewfile-unified | Complete machine reproducibility via `brew bundle` + `mas` |
+| Keep myNoise as-is | It's a webapp, no brew cask needed |
+| Remove Synergy | Not working currently, reinstall from symless.com when needed |
+| Linear via `linear-linear` cask | User preference for brew-managed |
+| Spark removed | User doesn't need it |
+| `mas` added as CLI tool | Enables MAS app management in Brewfile |
+| Scripts in `scripts/` not `~` | Keep home directory clean (global Claude rule) |
+
+---
+
 ## 2026-03-10 — Git signing key fix + clone missing repos
 
 ### What was done
@@ -114,11 +181,14 @@
 
 ### TODO (MacBook side)
 
-- [ ] Run removal commands from `mac-mini-package-review.md`
-- [ ] Install Mac Mini-only apps (alt-tab, bitwarden, busycontacts, etc.)
-- [ ] Remove `signal` from `~/.mackup.cfg`
-- [ ] Add `obs`, `sublime-text`, `dash`, `forklift`, `karabiner` to `~/.mackup.cfg`
+- [x] Run removal commands from `mac-mini-package-review.md`
+- [x] Install Mac Mini-only apps (alt-tab, bitwarden, busycontacts, etc.)
+- [x] Remove `signal` from `~/.mackup.cfg`
+- [x] Add `obs`, `sublime-text`, `dash`, `forklift`, `karabiner` to `~/.mackup.cfg`
+- [ ] Run `bash scripts/macbook-cleanup-remaining.sh` (steps 6-9 remaining: onedrive, proton-mail, etc.)
 - [ ] Run `bash ~/.mackup-sync/Mackup/brew-dump.sh`
+- [ ] Install OBSBOT Center manually from obsbot.com
 - [ ] Verify Syncthing fully synced
+- [ ] Copy updated Brewfile-unified to `~/.mackup-sync/Mackup/`
 
 
