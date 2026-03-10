@@ -39,6 +39,7 @@ section() { echo -e "\n${BOLD}=== $1 ===${NC}"; }
 # Track missing for --fix
 missing_brews=()
 missing_casks=()
+missing_extensions=()
 
 # ─── Homebrew itself ─────────────────────────────────────────────────────────
 section "Homebrew"
@@ -99,6 +100,7 @@ if command -v code &>/dev/null; then
             ok "$ext"
         else
             fail "$ext"
+            missing_extensions+=("$ext")
         fi
     done < "$BREWFILE"
 else
@@ -253,8 +255,15 @@ if $FIX_MODE; then
             brew install --cask "$pkg" 2>&1 | tail -1 || true
         done
     fi
-    if [[ ${#missing_brews[@]} -eq 0 && ${#missing_casks[@]} -eq 0 ]]; then
-        info "Nothing to fix — all brew packages present"
+    if [[ ${#missing_extensions[@]} -gt 0 ]] && command -v code &>/dev/null; then
+        echo -e "  Installing ${#missing_extensions[@]} missing VS Code extensions..."
+        for ext in "${missing_extensions[@]}"; do
+            echo -e "  ${CYAN}code --install-extension $ext${NC}"
+            code --install-extension "$ext" 2>&1 | tail -1 || true
+        done
+    fi
+    if [[ ${#missing_brews[@]} -eq 0 && ${#missing_casks[@]} -eq 0 && ${#missing_extensions[@]} -eq 0 ]]; then
+        info "Nothing to fix — everything is in sync"
     fi
 fi
 
