@@ -1,0 +1,46 @@
+// Caches and runtime data
+**/cache
+**/Cache
+**/.cache
+**/caches
+**/Caches
+**/node_modules
+**/*.log
+**/*.tmp
+**/tmp
+
+// macOS junk
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+// AI tool caches
+**/statsig
+**/telemetry
+**/stats-cache*
+**/image-cache
+**/paste-cache
+**/shell-snapshots
+**/session-env
+**/file-history
+**/debug
+
+// Browser profiles
+**/antigravity-browser-profile
+
+// Editor caches
+**/extensions
+**/projects
+**/chats
+**/sessions
+**/logs
+**/browser-logs
+
+// Databases and large binaries
+**/*.db
+**/*.alfdb
+**/*.pkgf
+**/Databases
+**/mcp-apps-cache
+**/mcp-hermit
