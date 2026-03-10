@@ -91,3 +91,4 @@
 - [ ] Add `obs`, `sublime-text`, `dash`, `forklift`, `karabiner` to `~/.mackup.cfg`
 - [ ] Run `bash ~/.mackup-sync/Mackup/brew-dump.sh`
 - [ ] Verify Syncthing fully synced
+
