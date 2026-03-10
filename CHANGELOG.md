@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-03-10 — Git signing key fix + clone missing repos
+
+### What was done
+
+1. **Git signing key — includeIf approach**
+   - Added `[includeIf "gitdir:~/"]` → `~/.gitconfig-local` to `~/.gitconfig`
+   - Created `~/.gitconfig-local` with Mac Mini's signing key (`github@grn.8shield.net`)
+   - Removed per-repo signing key override from `mac-sync-setup/.git/config`
+   - `~/.gitconfig-local` is machine-specific, not synced via Mackup/Syncthing
+
+2. **Cloned missing GitHub repos to `~/Projects/`**
+   - `job-search-private`
+   - `personal-learning-system`
+   - `obsidian-backup`
+
+3. **Pushed `Money` to GitHub**
+   - Already had local git repo with .gitignore excluding CSVs and YNAB exports
+   - Created private repo `pleasedodisturb/Money` and pushed
+   - Financial data (CSVs) synced via Syncthing, not git
+
+### Bugs & Issues Found
+
+#### MacBook signing key doesn't work on Mac Mini
+- **Symptom**: `git commit` fails with signing error — `~/.gitconfig` (synced via Mackup) contains MacBook's Secretive key (`Github--Notify@secretive.G14P.local`) which doesn't exist on Mac Mini
+- **Fix**: `includeIf` in global gitconfig loads `~/.gitconfig-local` which overrides with Mac Mini's key
+- **Why not just edit .gitconfig?**: It's synced via Mackup — changes would propagate to MacBook and break signing there
+
+---
+
 ## 2026-03-10 — Initial Setup
 
 ### What was done
