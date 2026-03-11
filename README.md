@@ -1,241 +1,195 @@
-# Mac Sync Setup
+# dotcastle
 
-Keep two (or more) Macs perfectly in sync — packages, configs, and app settings — without iCloud or any cloud service. Uses **Syncthing** for LAN file sync, **Mackup** for config symlinks, and **Homebrew** for package management.
+**Your configs are your castle. Guard them well.**
 
-> Built for a MacBook + Mac Mini setup, but easily adaptable to any multi-Mac workflow.
+Keep two (or more) Macs perfectly in sync — packages, configs, and app settings — without iCloud or any cloud service touching your stuff. Zero accounts. Zero trust. Just your machines talking directly to each other over LAN.
+
+---
+
+## The Problem
+
+You have a MacBook and a Mac Mini. You install an app on one, tweak a config on the other, and within a week they've drifted apart like two ships in the night. You SSH into your Mini and nothing feels right. Your shell aliases are missing. Your Git config is different. That one VS Code extension you need? Not here.
+
+iCloud sync is a black box that corrupts things. Dropbox wants $12/month. Google Drive indexes your SSH keys. And rsync scripts feel like defusing a bomb every time you run them.
+
+dotcastle fixes this with three boring, reliable, open-source tools — and zero cloud services in between.
 
 ## How It Works
 
 ```
-Mac A <--Syncthing (LAN)--> Mac B
-           ~/.mackup-sync/
-                └── Mackup/     ← shared config storage
-                    ├── .gitconfig
-                    ├── .config/fish/
-                    ├── Brewfile-unified
-                    └── ...
+MacBook  <── Syncthing (LAN, encrypted) ──>  Mac Mini
+                 ~/.mackup-sync/
+                      └── Mackup/
+                          ├── .gitconfig
+                          ├── .config/ghostty/
+                          ├── .config/fish/
+                          ├── Brewfile-unified
+                          └── ...everything that matters
 ```
 
-**Three tools, one workflow:**
+**Three tools. One workflow. Zero cloud.**
 
-| Tool | What it does | Why |
-|------|-------------|-----|
-| **Syncthing** | Syncs `~/.mackup-sync/` between Macs over LAN | No cloud, no accounts, works offline, encrypted |
-| **Mackup** | Symlinks app configs into the sync folder | You pick exactly which configs to sync |
-| **Homebrew + mas** | Installs CLI tools, GUI apps, and Mac App Store apps | One `Brewfile` to reproduce your entire setup |
+| Tool | Job | Why this one |
+|------|-----|-------------|
+| **[Syncthing](https://syncthing.net/)** | Syncs `~/.mackup-sync/` between Macs | No cloud, no accounts, encrypted, works offline, peer-to-peer. Your files never leave your network. |
+| **[Mackup](https://github.com/lra/mackup)** | Symlinks app configs into the sync folder | You pick exactly which configs to sync. Surgical precision, not a sledgehammer. |
+| **[Homebrew](https://brew.sh/) + [mas](https://github.com/mas-cli/mas)** | Installs CLI tools, GUI apps, Mac App Store apps | One `Brewfile` reproduces your entire software stack. |
+
+The magic: change a config on Machine A, Syncthing pushes it to Machine B in seconds. Mackup's symlinks mean the apps on Machine B pick it up immediately. No restart, no manual copy, no "did I remember to sync?"
 
 ## Quick Start
 
-### On your first Mac (the one with all your apps)
+### Machine A (the one with all your stuff)
 
 ```bash
-# 1. Clone this repo
-git clone https://github.com/pleasedodisturb/mac-sync-setup-public.git
-cd mac-sync-setup-public
+git clone https://github.com/pleasedodisturb/dotcastle.git
+cd dotcastle
 
-# 2. Install Homebrew (if you haven't)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# 3. Install everything from the Brewfile
+# Install everything from the Brewfile
 brew bundle install --file=brewfiles/Brewfile-unified
 
-# 4. Set up Syncthing
+# Start Syncthing
 brew services start syncthing
 mkdir -p ~/.mackup-sync
-open http://localhost:8384  # Syncthing web UI
+open http://localhost:8384  # pair with Machine B here
 
-# 5. Set up Mackup
+# Push your configs into the sync folder
 cp mackup/mackup.cfg ~/.mackup.cfg
 mkdir -p ~/.mackup && cp mackup/*.cfg ~/.mackup/
-mackup backup --force  # push configs into sync folder
+mackup backup --force
 ```
 
-### On your second Mac
+### Machine B (the fresh/second Mac)
 
 ```bash
-# 1. Install Homebrew + Syncthing
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install syncthing mackup
 brew services start syncthing
 mkdir -p ~/.mackup-sync
 
-# 2. Pair with your first Mac via Syncthing web UI (port 8384)
-#    Share the ~/.mackup-sync folder, wait for initial sync
+# Pair with Machine A via Syncthing web UI (port 8384)
+# Share ~/.mackup-sync, wait for initial sync, then:
 
-# 3. Pull configs from sync folder
 cp mackup/mackup.cfg ~/.mackup.cfg
 mkdir -p ~/.mackup && cp mackup/*.cfg ~/.mackup/
 mackup restore --force
 
-# 4. Install all packages
+# Install all packages
 brew bundle install --file=brewfiles/Brewfile-unified
 ```
 
-### Validate everything is in sync
+### Verify everything
 
 ```bash
-./scripts/validate-sync.sh         # check what's missing
+./scripts/validate-sync.sh         # see what's missing
 ./scripts/validate-sync.sh --fix   # auto-install missing packages
 ```
 
-## Directory Structure
+## What's Inside
 
 ```
-mac-sync-setup/
+dotcastle/
 ├── brewfiles/
-│   ├── Brewfile-unified          # The canonical package list
-│   ├── Brewfile-macbook          # Latest dump from Mac A
-│   └── Brewfile-mac-mini         # Latest dump from Mac B
+│   ├── Brewfile-unified          # The canonical package list (source of truth)
+│   ├── Brewfile-macbook          # Latest dump from MacBook
+│   └── Brewfile-mac-mini         # Latest dump from Mac Mini
 ├── mackup/
 │   ├── mackup.cfg                # Main Mackup config → ~/.mackup.cfg
-│   ├── ai-tools.cfg              # AI tools (Claude, Cursor, etc.)
-│   ├── alfred.cfg                # Alfred prefs (not databases)
-│   ├── cursor-editor.cfg         # Cursor — 4 config files only
+│   ├── ai-tools.cfg              # Claude, Cursor, Codex configs
+│   ├── alfred.cfg                # Alfred prefs (not databases/caches)
+│   ├── cursor-editor.cfg         # Cursor MCP, hooks, CLI config
 │   └── custom-dotfiles.cfg       # Dotfiles + XDG configs
 ├── syncthing/
-│   └── stignore                  # Keeps caches out of sync
+│   └── stignore                  # Keeps caches/junk out of sync
 ├── scripts/
-│   ├── brew-dump.sh              # Dump current packages (auto-detects machine)
+│   ├── brew-dump.sh              # Dump packages (auto-detects machine)
 │   ├── validate-sync.sh          # Verify everything is installed & linked
 │   └── publish-public.sh         # Sanitize & publish to public repo
-├── CHANGELOG.md                  # Bugs, fixes, decisions log
-└── README.md
+├── CHANGELOG.md                  # Decisions, bugs, fixes log
+├── LICENSE                       # MIT
+└── README.md                     # You are here
 ```
 
 ## The Brewfile
 
-`brewfiles/Brewfile-unified` is the single source of truth. It includes:
+`brewfiles/Brewfile-unified` is the single source of truth. One file, both machines:
+
 - **5 taps** (Homebrew repos)
-- **25+ CLI tools** (fish, gh, docker, node, etc.)
+- **25+ CLI tools** (zsh, gh, docker, node, tmux, starship, fzf, bat...)
 - **100 GUI apps** (brew casks)
 - **35+ Mac App Store apps** (via `mas`)
 - **VS Code extensions**
 
-Run `bash scripts/brew-dump.sh` after adding or removing packages — it auto-detects which machine you're on and saves the dump to the sync folder.
+After adding or removing packages, run:
+```bash
+bash scripts/brew-dump.sh
+```
+It auto-detects which machine you're on and saves the dump.
 
-## App Highlights
+## What Gets Synced (Mackup)
 
-Here are some of the standout apps in this setup and why they're worth checking out:
+Mackup symlinks config files into `~/.mackup-sync/Mackup/`, which Syncthing keeps in sync.
 
-### Productivity & Window Management
-
-- **[Alfred](https://www.alfredapp.com/)** — Spotlight on steroids. Custom workflows, clipboard history, snippets. The Powerpack is worth every penny.
-- **[Raycast](https://www.raycast.com/)** — Modern Alfred alternative with built-in extensions. Great for quick calculations, window management, and developer tools.
-- **[Rectangle Pro](https://rectangleapp.com/pro)** — Window snapping and management. Drag to edges, keyboard shortcuts, custom layouts.
-- **[Alt-Tab](https://alt-tab-macos.netlify.app/)** — Windows-style alt-tab with window previews. Free and open source.
-- **[Swish](https://highlyopinionated.co/swish/)** — Trackpad gesture window management. Swipe to snap, pinch to minimize. Feels native.
-- **[Keyboard Maestro](https://www.keyboardmaestro.com/)** — The ultimate Mac automation tool. If you can describe it, you can automate it.
-- **[Karabiner-Elements](https://karabiner-elements.pqrs.org/)** — Remap any key to anything. Essential for custom keyboard layouts and hyper keys.
-
-### Menu Bar & System
-
-- **[Bartender](https://www.macbartender.com/)** — Tame your menu bar. Hide, rearrange, and show icons on demand.
-- **[iStat Menus](https://bjango.com/mac/istatmenus/)** — CPU, memory, network, disk, battery stats in your menu bar. Beautiful and detailed.
-- **[HazeOver](https://hazeover.com/)** — Dims background windows so you focus on the active one. Subtle but effective.
-- **[Amphetamine](https://apps.apple.com/app/amphetamine/id937984704)** — Keep your Mac awake. Per-app rules, scheduled sessions, triggers.
-- **[LookAway](https://apps.apple.com/app/lookaway/id6747192301)** — Reminds you to take screen breaks. Uses your camera to detect when you're looking.
-- **[Quitter](https://marco.org/2016/05/02/quitter)** — Auto-hides or quits apps after inactivity. Great for keeping Slack/Discord from distracting you.
-
-### Development
-
-- **[Cursor](https://cursor.sh/)** — AI-first code editor (VS Code fork). Inline AI editing, chat, and codebase-aware completions.
-- **[Claude Code](https://claude.ai/code)** — Anthropic's CLI coding agent. The tool that built this repo.
-- **[Ghostty](https://ghostty.org/)** — Fast, native terminal emulator. GPU-accelerated, zero-config beautiful defaults.
-- **[iTerm2](https://iterm2.com/)** — The classic Mac terminal. Split panes, profiles, triggers, shell integration.
-- **[Dash](https://kapeli.com/dash)** — Offline documentation browser. Instant search across 200+ API docs.
-- **[ForkLift](https://binarynights.com/)** — Dual-pane file manager with SFTP, S3, and cloud storage built in.
-- **[Proxyman](https://proxyman.io/)** — Modern HTTP debugging proxy. Beautiful UI, easy SSL setup, great for API work.
-- **[Wireshark](https://www.wireshark.org/)** — Network protocol analyzer. When you need to see what's really going on.
-
-### Writing & Notes
-
-- **[Obsidian](https://obsidian.md/)** — Markdown-based knowledge base with backlinks, graph view, and plugins. Local-first.
-- **[Sublime Text](https://www.sublimetext.com/)** — Lightning-fast text editor. Perfect for quick edits and large files.
-- **[SnippetsLab](https://www.renfei.org/snippets-lab/)** — Code snippet manager with syntax highlighting and iCloud sync.
-- **[Soulver](https://soulver.app/)** — Notepad meets calculator. Write natural math expressions and get instant answers.
-- **[Calca](https://calca.io/)** — Another great text-based calculator, Markdown-native.
-
-### Privacy & Security
-
-- **[Proton Mail](https://proton.me/mail)** + **[Proton Drive](https://proton.me/drive)** + **[ProtonVPN](https://protonvpn.com/)** — End-to-end encrypted email, storage, and VPN. The whole Proton ecosystem.
-- **[Bitwarden](https://bitwarden.com/)** — Open-source password manager. Self-hostable, cross-platform.
-- **[Secretive](https://github.com/maxgoedjen/secretive)** — Store SSH keys in the Secure Enclave. Keys never leave the hardware.
-- **[Little Snitch](https://www.obdev.at/products/littlesnitch/)** — Network monitor and firewall. See and control every connection your Mac makes.
-- **[Standard Notes](https://standardnotes.com/)** — Encrypted, long-lasting notes. Simple and private.
-
-### Media & Creative
-
-- **[Pixelmator Pro](https://www.pixelmator.com/pro/)** — Powerful image editor, native Mac app. Great Photoshop alternative.
-- **[Acorn](https://flyingmeat.com/acorn/)** — Another excellent image editor. Lighter than Pixelmator, still very capable.
-- **[CleanShot X](https://cleanshot.com/)** — The best screenshot tool for Mac. Annotations, scrolling capture, cloud upload, screen recording.
-- **[OBS](https://obsproject.com/)** — Open-source streaming and recording. Professional-quality, completely free.
-- **[SoundSource](https://rogueamoeba.com/soundsource/)** — Per-app volume control, EQ, and audio routing. Control exactly what you hear.
-- **[MacWhisper](https://goodsnooze.gumroad.com/l/macwhisper)** — Local speech-to-text using OpenAI's Whisper model. Fast, private, accurate.
-- **[Superwhisper](https://superwhisper.com/)** — Voice-to-text anywhere on your Mac. Dictate into any app.
-- **[VLC](https://www.videolan.org/vlc/)** — Plays anything. The universal media player.
-
-### Utilities
-
-- **[DaisyDisk](https://daisydiskapp.com/)** — Visualize disk usage. Find what's eating your storage in seconds.
-- **[GrandPerspective](https://grandperspectiv.sourceforge.net/)** — Another disk visualizer. Free and open source.
-- **[Keka](https://www.keka.io/)** — File archiver. Handles every format, clean UI.
-- **[TextSniper](https://textsniper.app/)** — OCR anywhere on screen. Select any text in an image and copy it.
-- **[ImageOptim](https://imageoptim.com/mac)** — Lossless image compression. Drag, drop, smaller files. Free.
-- **[Timing](https://timingapp.com/)** — Automatic time tracking. Knows what you worked on without manual timers.
-- **[Transnomino](https://transnomino.bastiaanverreijt.com/)** — Batch file renamer with regex, counters, and date patterns.
-
-## Mackup: What Gets Synced
-
-Mackup works by symlinking config files into `~/.mackup-sync/Mackup/`, which Syncthing keeps in sync across machines.
-
-**Built-in Mackup profiles** (just works):
-- Shell configs (bash, zsh, fish, iTerm2, Ghostty)
-- Git, GitHub CLI, SSH, Vim, Docker
-- Alfred, Keyboard Maestro, CleanShot, iStat Menus, Bartender
-- Homebrew, Proxyman, OBS, Sublime Text, Dash, ForkLift, Karabiner
+**Built-in profiles** (just list them in `mackup.cfg`):
+Shell (zsh, fish, bash), Git, GitHub CLI, SSH, Vim, Docker, Alfred, Keyboard Maestro, CleanShot, iStat Menus, Homebrew, Proxyman, OBS, Sublime Text, Dash, ForkLift, Karabiner, Ghostty, iTerm2
 
 **Custom profiles** (in `mackup/`):
-- `ai-tools.cfg` — Claude, Cursor, Codex, Gemini, Aider, Continue (specific config files only, no caches)
+- `ai-tools.cfg` — Claude Code, Cursor, Codex, Gemini, Aider (specific config files, no caches)
 - `cursor-editor.cfg` — MCP config, hooks, CLI config, argv
 - `custom-dotfiles.cfg` — `.gitallowedsigners`, shell integrations, XDG configs
-- `alfred.cfg` — Prefs and history only (not databases or caches)
+- `alfred.cfg` — prefs and history only (not databases)
 
-> **Important:** Never point Mackup at entire directories. Always specify individual files in custom `.cfg` profiles, or you'll sync thousands of cache/runtime files.
+> **Rule:** Never point Mackup at entire directories. Always specify individual files, or you'll sync thousands of cache files and regret everything.
 
 ## Syncthing Ignore Patterns
 
-The `syncthing/stignore` file keeps junk out of sync:
-- Caches, `node_modules`, `.DS_Store`, logs, temp files
-- AI tool caches (statsig, telemetry, image-cache, etc.)
+The `syncthing/stignore` keeps the sync folder clean:
+
+- `.DS_Store`, `node_modules`, logs, temp files
+- AI tool caches (statsig, telemetry, image-cache)
 - Editor caches (extensions, sessions, browser-logs)
 - Databases and large binaries
 
-Copy it to `~/.mackup-sync/.stignore` after setup.
+Copy it after setup: `cp syncthing/stignore ~/.mackup-sync/.stignore`
 
 ## Scripts
 
 | Script | What it does |
 |--------|-------------|
-| `brew-dump.sh` | Dumps your current Homebrew packages to a Brewfile. Auto-detects which machine you're on and names the file accordingly. |
-| `validate-sync.sh` | Checks that all packages, casks, extensions, configs, and services are properly installed. Use `--fix` to auto-install missing items. |
-| `publish-public.sh` | Strips PII and publishes a sanitized copy to the public repo. |
+| `brew-dump.sh` | Dumps current Homebrew packages. Auto-detects machine, names file accordingly. |
+| `validate-sync.sh` | Checks packages, casks, extensions, configs, services. `--fix` to auto-install missing. |
+| `publish-public.sh` | Strips PII and publishes sanitized copy to the public repo. |
 
 ## Adapting This for Your Setup
 
-1. **Fork this repo** and make it your own
-2. **Edit `Brewfile-unified`** — remove apps you don't want, add ones you do
-3. **Edit `mackup/mackup.cfg`** — pick which apps to sync configs for
-4. **Add custom Mackup profiles** in `mackup/` for apps that need specific files synced
-5. **Run `validate-sync.sh`** to verify everything installed correctly
+1. **Fork it** — make it your castle
+2. **Edit `Brewfile-unified`** — your apps, your rules
+3. **Edit `mackup/mackup.cfg`** — pick which configs to sync
+4. **Add custom `.cfg` profiles** for apps that need specific files
+5. **Run `validate-sync.sh`** — verify everything works
 
 ### Tips
 
-- Prefer **brew casks** over Mac App Store when both exist — they're trackable in the Brewfile and easier to automate
-- Use **`mas`** for apps that are App Store-only
-- Keep your Brewfile updated: run `brew-dump.sh` after adding/removing packages
-- Test `mackup restore` on one machine before letting it sync to the other
-- Machine-specific configs (like git signing keys) should NOT go through Mackup — use git's `includeIf` or a `.local` config file instead
+- **Brew casks over Mac App Store** when both exist — they're trackable in the Brewfile
+- **`mas`** for App Store-only apps
+- **Machine-specific configs** (git signing keys, local paths) should NOT go through Mackup — use `includeIf` or `.local` override files
+- **Test `mackup restore` on one machine** before syncing changes to the other
+- **Git repos sync via GitHub**, not Syncthing — never mix the two
+
+## The Bigger Picture
+
+dotcastle is the plumbing. **[macOS-nirvana](https://github.com/pleasedodisturb/macOS-nirvana)** is the blueprint — the opinionated guide to *which* apps to install and *why*. Together:
+
+- **macOS-nirvana** tells you what to install
+- **dotcastle** keeps it all in sync
+
+## How This Was Made
+
+Built in a series of sessions with [Claude Code](https://claude.com/claude-code) — Anthropic's AI coding assistant. The human debugged the edge cases. The AI wrote the scripts. The configs got synced. Nobody's Mac drifted apart again.
 
 ## License
 
-MIT — do whatever you want with it.
+[MIT](./LICENSE) — build your own castle.
+
+---
+
+*"A man's home is his castle, and his castle's configs should follow him everywhere."* — nobody, until now
