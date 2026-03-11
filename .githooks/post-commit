@@ -1,0 +1,13 @@
+#!/bin/bash
+# Auto-publish sanitized copy to public repo after every commit
+# Runs in background so it doesn't block your workflow
+
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+PUBLISH_SCRIPT="$SCRIPT_DIR/scripts/publish-public.sh"
+
+if [ -f "$PUBLISH_SCRIPT" ]; then
+  echo "[hook] Publishing sanitized copy to public repo..."
+  bash "$PUBLISH_SCRIPT" &>/dev/null &
+  disown
+  echo "[hook] Publishing in background (PID: $!)"
+fi
