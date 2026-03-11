@@ -2,7 +2,7 @@
 
 ## Project
 
-Cross-machine configuration sync for Vitalik's MacBook + Mac Mini.
+Cross-machine configuration sync for User's MacBook + Mac Mini.
 Uses **Syncthing** (LAN sync) + **Mackup** (config symlinks) + **Homebrew** (package management).
 
 ## Architecture
@@ -41,8 +41,8 @@ MacBook <--Syncthing (LAN)--> Mac Mini
 
 | Machine | Hostname | Signing Key |
 |---------|----------|-------------|
-| MacBook | Vitalik's MacBook | Secretive (Github--Notify@secretive.G14P.local) |
-| Mac Mini | Vitalik's Mac mini | `~/.gitconfig-local` (github@grn.8shield.net) |
+| MacBook | User's MacBook | Secretive (YOUR_SIGNING_KEY@secretive.local) |
+| Mac Mini | User's Mac Mini | `~/.gitconfig-local` (YOUR_EMAIL@example.com) |
 
 ## Safety Rules
 

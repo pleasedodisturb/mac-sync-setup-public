@@ -68,13 +68,13 @@ brew uninstall --cask tailscale-app 2>/dev/null || true
 
 echo "Removing Tailscale data & config..."
 rm -rf ~/Library/Containers/io.tailscale.ipn.macos*
-rm -rf ~/Library/Group\ Containers/W5364U7YZB.group.io.tailscale.ipn.macos
+rm -rf ~/Library/Group\ Containers/TAILSCALE_TEAM_ID.group.io.tailscale.ipn.macos
 rm -rf ~/Library/LaunchAgents/homebrew.mxcl.tailscale.plist
 rm -f ~/Library/Preferences/io.tailscale.ipn.macsys.plist
 rm -f /usr/local/bin/tailscale 2>/dev/null || sudo rm -f /usr/local/bin/tailscale
 
 echo "Removing system extension (may need sudo)..."
-sudo systemextensionsctl uninstall W5364U7YZB io.tailscale.ipn.macsys.network-extension 2>/dev/null || true
+sudo systemextensionsctl uninstall TAILSCALE_TEAM_ID io.tailscale.ipn.macsys.network-extension 2>/dev/null || true
 
 echo "Reinstalling Tailscale..."
 brew install --cask tailscale-app
